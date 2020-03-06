@@ -1,0 +1,10 @@
+{
+    "connectionString": "mongodb://localhost:27017/startasker",
+    "apiURL": "http://localhost:8080/api",
+    "secretkey":"StarTasker2020",
+    "mailService":"mail.startasker.com",
+    "authMail":"enquiry@startasker.com",
+    "authMailPassword":"Startasker57",
+    "fromMail":"enquiry@startasker.com"
+    
+}
