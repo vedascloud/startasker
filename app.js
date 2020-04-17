@@ -11,6 +11,11 @@ var Customer = require('./routes/Customer');
 var PostJobs = require('./routes/PostJobs');
 var categories = require('./routes/Categories');
 var Provider = require('./routes/Provider');
+var Feedback = require('./routes/FeedBack');
+var AddCard = require('./routes/AddCard');
+var Task = require('./routes/Task');
+var Deal = require('./routes/Deals');
+var Coupon = require('./routes/Coupon');
 var app = express();
 
 // view engine setup
@@ -29,6 +34,11 @@ app.use('/api/customer', Customer);
 app.use('/api/postjob', PostJobs);
 app.use('/api/categories', categories);
 app.use('/api/provider', Provider);
+app.use('/api/feedback',Feedback);
+app.use('/api/task',Task)
+app.use('/api/addcard',AddCard);
+app.use('/api/deal',Deal);
+app.use('/api/coupon',Coupon);
 
 //app.use('/api/customer',CustomerRegister);
 
@@ -38,6 +48,7 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -46,8 +57,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
-  
+  res.render('error');  
 });
 
 module.exports = app;
