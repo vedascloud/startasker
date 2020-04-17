@@ -17,65 +17,32 @@ var AddCommentToPost = {
             })
             return
         }
-        let postId = params.postId;
+        let postId = params.postID;
         let fetchQuery = dbQueries.getPostJobQueryFromPostId(postId);
         fetchQuery.then((isFound) => {
-            if (isFound) {
-                let findIdQuery = dbQueries.getPostCommentsFromPostId(postId);
-                findIdQuery.then((found) => {                   
-                    if (!found) {
-                        let addCommentQuery = dbQueries.getAddCommentToPostJobQuery(params);
-                        addCommentQuery.save((err) => {
-                            if (err) {
-                                callback({
-
-                                    response: statusCodes.failure,
-                                    message: "Adding comment to postjob is failed"
-
-                                });
-                                return;
-                            } else {
-                                callback({
-
-                                    response: statusCodes.success,
-                                    message: "Adding comment to postjob is success"
-
-                                });
-                                return;
-                            }
-                        })
+            if (isFound) {                
+                let addCommentQuery = dbQueries.getPushCommentsToPostJobQuery(params);
+                addCommentQuery.then((err) => {
+                    console.log('data saved...')
+                    if (!err) {
+                        callback({
+                            response: statusCodes.failure,
+                            message: "Adding comment to postjob is failed"
+                        });
+                        return;
                     } else {
-                        let addCommentQuery = dbQueries.getPushCommentsToPostJobQuery(params);
-                        addCommentQuery.then((err) => {
-                            console.log('data saved...')
-                            if (!err) {
-                                callback({
-
-                                    response: statusCodes.failure,
-                                    message: "Adding comment to postjob is failed"
-
-                                });
-                                return;
-                            } else {
-                                callback({
-
-                                    response: statusCodes.success,
-                                    message: "Adding comment to postjob is success"
-
-                                });
-                                return;
-                            }
-                        })
+                        callback({
+                            response: statusCodes.success,
+                            message: "Adding comment to postjob is success"
+                        });
+                        return;
                     }
                 })
 
-
             } else {
                 callback({
-
                     response: statusCodes.failure,
                     message: "No job found to add comment"
-
                 });
                 return;
             }

@@ -3,13 +3,17 @@ let schema = mongoose.Schema;
 var CategorySchema = new schema({
 
     categoryId: {
-        type: String,
         required: true,
+        type: String,
         unique: true
     },
     categoryName: {
         type: String,
         required: true
+    },
+    image:{
+        type: String,
+        required: false
     }
 
 });

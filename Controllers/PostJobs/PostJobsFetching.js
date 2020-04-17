@@ -18,14 +18,14 @@ var fetchPostJobs = {
         let fetchQuery = dbQueries.getPostJobQueryFromId(params);
         fetchQuery.then((ifFound) => {
             if (ifFound) {
-                return callback({
-                    status: 200,
-                    data: {
-                        response: statusCodes.success,
-                        message: "Jobs fetched successfully",
-                        jobsData: ifFound
-                    }
-                });
+                    return callback({
+                        status: 200,
+                        data: {
+                            response: statusCodes.success,
+                            message: "Jobs fetched successfully",
+                            jobsData: ifFound
+                        }
+                    });
             } else {
                 return callback({
                     status: 200,
@@ -39,22 +39,23 @@ var fetchPostJobs = {
         });
     },
     fetchAllJobs: (callback) => {
-
         let fetchQuery = dbQueries.getAllPostJobsQuery();
-        fetchQuery.then((find) => {            
-            callback({ status: 200, 
-                data: { 
-                    response: statusCodes.success, 
-                    message: "Post jobs fetched successfully" ,
-                    findJobs: find
-                } });
-            return;
-
-           
+        fetchQuery.then((found) => {
+           if(found){
+            return callback({
+                status: 200,
+                data: {
+                    response: statusCodes.success,
+                    message: "Jobs fetched successfully",
+                    jobsData: found
+                }
+            });
+           }
         }).catch((error) => {
             console.log(error);
         })
     }
 }
+
 
 module.exports = fetchPostJobs;

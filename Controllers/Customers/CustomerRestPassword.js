@@ -38,7 +38,7 @@ var resetCustomerPassword = {
                         status: 200,
                         data: {
                             response: statusCodes.failure,
-                            message: statusMessages.medical_personnel_reset_password_fail
+                            message: "Reset password failed"
                         }
                     });
                 })
@@ -52,7 +52,7 @@ var resetCustomerPassword = {
                     });
                 }
             }else{
-                callback({ status: 200, data: { response: statusCodes.failure, message: "No data found with us. Please register with us." } });
+                callback({ status: 200, data: { response: statusCodes.failure, message: "No data found. Please register with us." } });
                 return;
             }
         })

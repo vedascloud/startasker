@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 let schema = mongoose.Schema;
 var PostJobSchema = new schema({
-    postId: {
+    postID: {
         type: String,
         required: true,
         index: true,
         unique: true
     },
-    userId: {
+    userID: {
         type: String,
         required: true
     },
@@ -25,64 +25,86 @@ var PostJobSchema = new schema({
     },
     postTitle: {
         type: String,
-        required: true
+        required: false
     },
     describeTaskInDetails: {
         type: String,
-        required: true
+        required: false
+    },
+    numberOfWorkers: {
+        type: Number,
+        required: false,
+        default: 1
+    },
+    canThisTaskRemote: {
+        type: Boolean,
+        requred: false,
+        default: false
     },
     location: {
         type: String,
-        required: true
+        required: false
     },
-    latitude: {
-        type: String,  
-        required: true
+    loc: {
+        type: [Number],  // [<longitude>, <latitude>]
+        index: '2d',      // create the geospatial index
+        required: false
     },
-    longitude: {
-        type: String,  
-        required: true
+    mustHaves: {
+        type: Array,
+        requred: false
     },
     postedDate: {
         type: String,
-        required: true
+        required: false
     },
     taskDate: {
         type: String,
-        required: true
+        required: false
+    },
+    convenientTimings: {
+        type: Array,
+        required: false
     },
     postendDate: {
-        type: String
-    },
-    estHoursToCompleteJob: {
         type: String,
-        required: true
-    },
-    startTime: {
-        type: String,
-        required: true
+        required: false
     },
     budget: {
-        type: Number,
-        required: true
+        budgetType: {
+            Total: {
+                type: Boolean,
+                required: false,
+                default: true
+            },
+            HourlyRate: {
+                type: Boolean,
+                required: false,
+                default: false
+            }
+        },
+        budget:{
+            type:Number,
+            required:false,
+            default: 0
+        },
+        Hours: {
+            type: String,
+            required: false
+        },
+        pricePerHour: {
+            type: Number,
+            required: false,
+            default: 0
+        }
     },
-    images: [{
+    attachments: [{
         type: String,
         required: false
     }],
-    mobile: {
-        countryCode: {
-            required: true,
-            type: String
-        },
-        phoneNumber: {
-            required: true,
-            type: String
-        }
-    },
     post_Status: {
         type: String,
-        required: true
+        required: false
     },
     filled: {
         type: Boolean,
@@ -97,11 +119,81 @@ var PostJobSchema = new schema({
         default: false,
         required: false
     },
-    isTotal: {
-        type: Boolean,
+    postModifyDate: {
+        type: String,
+        required: false
+    },
+    comments: [{
+        author: {
+            type: String,
+            required: true
+        },
+        author_email: {
+            type: String,
+            required: true
+        },
+        author_comment: {
+            type: String,
+            required: true
+        },
+        author_url: {
+            type: String,
+            required: false
+        },
+        author_ip: {
+            type: String,
+            required: false
+        },
+        comment_date: {
+            type: String,
+            required: true
+        },
+        comment_date_gmt: {
+            type: String,
+            required: true
+        },
+        type: Object,
+        default: []
+    }],
+    offers: [{
+        authorName: {
+            type: String,
+            required: false
+        },
+        offeredUserID: {
+            type: String,
+            required: false
+        },
+        authorMessages: [{
+            message: {
+                type: String,
+                required: false
+            },
+            userID: {
+                type: String,
+                required: false
+            },
+            timestamp: {
+                type: String,
+                required: false
+            },
+        }],
+        authorRatings: {
+            type: Number,
+            required: false
+        },
+        budget: {
+            type: Number,
+            required: false
+        },
+        authorProfilePic: {
+            type: String,
+            required: false
+        },
+        type: Object,
         required: false,
-        default: true
-    }
+        default: []
+    }]
 
 });
 

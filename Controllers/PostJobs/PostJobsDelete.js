@@ -20,15 +20,14 @@ var deletePostJob = {
         }
         let getJobQuery = dbQueries.getPostJobQueryFromPostId(params.postId);
         getJobQuery.then((found) => {
-            if(found){     
-                console.log('db data..',found.images);           
-                return deletePostJobs(found.images,callback, params);
+            if(found){        
+                return deletePostJobs(callback, params);
             }else{
                 callback({
                     status: 200,
                     data: {
                         response: statusCodes.failure,
-                        message: "No job found to delete"
+                        message: "No job found to cancel"
                     }
                 });
                 return;
@@ -39,24 +38,24 @@ var deletePostJob = {
 
 }
 
-function deletePostJobs(images,callback,params){
+function deletePostJobs(callback,params){
     let deleteJobQuery = dbQueries.getDeletePostJobQuery(params.postId);
     deleteJobQuery.then((isDelete) => {
         if(isDelete){           
-            for (let attachment of images){
-                    fs.unlink('./public' + attachment, (err) => {
-                        if (err) {
-                            console.error(err)
-                            return
-                        }
-                    });
-                }
+            // for (let attachment of images){
+            //         fs.unlink('./public' + attachment, (err) => {
+            //             if (err) {
+            //                 console.error(err)
+            //                 return
+            //             }
+            //         });
+            //     }
             
             callback({
                 status: 200,
                 data: {
                     response: statusCodes.success,
-                    message: "Job deleted successfully"
+                    message: "Job canceled successfully"
                 }
             });
             return;
@@ -65,7 +64,7 @@ function deletePostJobs(images,callback,params){
                 status: 200,
                 data: {
                     response: statusCodes.failure,
-                    message: "Job deleted failed"
+                    message: "Job failed to canceled"
                 }
             });
             return;

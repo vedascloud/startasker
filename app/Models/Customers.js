@@ -144,6 +144,98 @@ var CustomerSchema = new schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    BankAccountDetailes:{
+        Accountholdername:{
+            type:String,
+            required:false
+        },
+        AccountNumber:{
+            type:String,
+            required:false
+        },
+        BSB:{
+            type:String,
+            required:false
+        },
+        required: false,
+        type: Object,
+        default: null
+    },
+    BillingAddress: {
+        AddressLine1: {
+            type: String,
+            required: false
+        },
+        AddressLine2: {
+            type: String,
+            required: false
+        },
+        Suburb: {
+            type: String,
+            required: false
+        },
+        State: {
+            type: String,
+            required: false
+        },
+        Postcode: {
+            type: String,
+            required: false
+        },
+        Country: {
+            type: String,
+            required: false
+        },
+        required: false,
+        type: Object,
+        default: null
+    },
+    search_Configurations:{
+        lat:{
+            type: String,
+            required:false
+        },
+        long: {
+            type: String,
+            required: false
+        },
+        radius: {
+            type: String,
+            required: false,
+            default: '5000'
+        },
+        maxPrice:{
+            type: String,
+            required: false,
+            default: '9999'
+        },
+        minPrice:{
+            type:String,
+            required:false,
+            default: '5'
+        },
+        // taskStates:{
+        //     type: String,
+        //     required: false,
+        //     enum: ['post','assigned','completed','overdue','closed','expired','draft','allocated'],
+        //     default: 'post'
+        // },
+        taskTypes: {
+            type: String,
+            required: false,
+            enum: ['In person','Remotly','All'],
+            default: 'All'
+        },
+        locationName:{
+            type:String,
+            required: false
+        },
+        hideAssignedTask: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     }
 
 });

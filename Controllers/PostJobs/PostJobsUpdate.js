@@ -27,7 +27,7 @@ var postJobsUpdate = {
         });
         req.pipe(busboy);       
         function uploadToFolder(images, fields) {
-            let query = dbQueries.getPostJobQueryFromPostId(fields.postId);
+            let query = dbQueries.getPostJobQueryFromPostId(fields.postID);
             query.then((user) => {
                 if (user) {    
                     var imagesPath = [];
@@ -40,7 +40,7 @@ var postJobsUpdate = {
                                 var image = images[key];
                                 console.log(image);
                                 let imageName = randomFileName.getFileName(image.name);
-                                let imagepath = "./public/images/Customers/" + imageName;
+                                let imagepath = "./public/images/PostImages/" + imageName;
                                 image.mv(imagepath, (fileErr) => {
                                     if (fileErr) {
                                         return callback({
@@ -85,7 +85,7 @@ var postJobsUpdate = {
             })
             return
         }
-        let query = dbQueries.getPostJobQueryFromPostId(params.postId);
+        let query = dbQueries.getPostJobQueryFromPostId(params.postID);
         query.then((record_found) => {
                 if(record_found){
                     let updateQuery = dbQueries.getUpdatePostJobAsFilledQuery(params);
@@ -134,7 +134,7 @@ function updatePostJobData(callback, params, imagesPaths) {
     console.log('imagespaths..',imagesPaths);
     for (var i = 0; i < imagesPaths.length; i++) {
         var imagePath = imagesPaths[i];
-        imagePath = "/images/Customers/" + imagePath
+        imagePath = "/images/PostImages/" + imagePath
 
         imagesPaths[i] = imagePath;
     }

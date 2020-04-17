@@ -5,6 +5,7 @@ var BrowsePostJobs = require('../PostJobs/BrowsePostJobs');
 var DeletePostJob = require('../PostJobs/PostJobsDelete');
 var AddJobToFavorite = require('../PostJobs/AddPostJobToFavourites');
 var AddingComment = require('../PostJobs/AddCommentsToPostJob');
+var AddingOffer = require('../PostJobs/OfferInsert');
 
 var PostJobs = {
 
@@ -39,6 +40,9 @@ var PostJobs = {
     },
     updatePostJobAsFilled: (params,callback) => {
         return UpdatePostJobs.updateJobAsFilled(params,callback);
+    },
+    addOfferToPost: (params,callback) => {
+        return AddingOffer.addOffer(params,callback);
     }
 }
 

@@ -3,52 +3,69 @@ const Joi = require('@hapi/joi');
 
 var newPostJobParamsValidations = {
     validateNewPostJobParamS:(params) => {
-      
+      const budgetType = Joi.object({
+          Total: Joi.string().required(),
+          HourlyRate: Joi.string().required()
+      })
+     let category = Joi.object({
+        categoryId: Joi.string().required(),
+        categoryName: Joi.string().required()
+    })
         const schema = Joi.object({
-            userId: Joi.string().required(),
-            categoryId: Joi.string().required(),
-            categoryName: Joi.string().required(),
+            userID: Joi.string().required(),
+            category: category.required(),           
             postTitle: Joi.string().required(),
-            description: Joi.string().required(),
-            location: Joi.string().required().optional().allow(''),
-            latitude: Joi.number().required(),
-            longitude: Joi.number().required(),
+            describeTaskInDetails: Joi.string().required(),
+            numberOfWorkers:Joi.number().required(),
+            canThisTaskRemote: Joi.string().required(),
+            location: Joi.string().optional().allow(''),
+            latitude: Joi.number().optional().allow(''),
+            longitude: Joi.number().optional().allow(''),
+            mustHaves: Joi.array().optional().allow(''),
             taskDate: Joi.string().required(),
-            estHours: Joi.string().required().optional().allow(''),
-            startTime: Joi.string().required().optional().allow(''),
+            convenientTimings: Joi.array().optional().allow(''),
+            budgetType: budgetType.required(),
             budget: Joi.number().required(),
-            countryCode: Joi.string().required(),
-            phoneNumber: Joi.string().required(),
-            post_Status: Joi.string().required(),
-            isTotal: Joi.boolean().required()
+            Hours: Joi.string().optional().allow(''),
+            pricePerHour: Joi.number().optional().allow(''),
+            post_Status: Joi.string().required()           
         })
         return schema.validate(params);
     },
     validateFetchJobParams:(params) => {
         const schema = Joi.object({
-            userId : Joi.string().required()
+            userID : Joi.string().required()
         })
         return schema.validate(params);
     },
 
     validatePostJobsUpdateParams:(params) => {
-        const updateSchema = Joi.object({
-            postId: Joi.string().required(),
+        const budgetType = Joi.object({
+            Total: Joi.string().required(),
+            HourlyRate: Joi.string().required()
+        })
+        let category = Joi.object({
             categoryId: Joi.string().required(),
-            categoryName: Joi.string().required(),
+            categoryName: Joi.string().required()
+        })
+        const updateSchema = Joi.object({
+            postID: Joi.string().required(),
+            category: category.required(),
             postTitle: Joi.string().required(),
-            description: Joi.string().required(),
-            location: Joi.string().required().optional().allow(''),
-            latitude: Joi.string().required(),
-            longitude: Joi.string().required(),
-            estHours: Joi.string().required().optional().allow(''),
-            startTime: Joi.string().required().optional().allow(''),
-            budget: Joi.number().required(),
-            countryCode: Joi.string().required(),
-            phoneNumber: Joi.string().required(),
+            describeTaskInDetails: Joi.string().required(),
+            numberOfWorkers:Joi.number().required(),
+            canThisTaskRemote: Joi.string().required(),
+            location: Joi.string().optional().allow(''),
+            latitude: Joi.number().optional().allow(''),
+            longitude: Joi.number().optional().allow(''),
+            mustHaves: Joi.array().optional().allow(''),
             taskDate: Joi.string().required(),
-            post_Status: Joi.string().required(),
-            isTotal: Joi.boolean().required()
+            convenientTimings: Joi.array().optional().allow(),
+            budgetType: budgetType.required(),
+            budget: Joi.number().required(),
+            Hours: Joi.string().optional().allow(''),
+            pricePerHour: Joi.number().optional().allow(''),
+            post_Status: Joi.string().required()     
         })
         return updateSchema.validate(params);
     },
@@ -64,22 +81,20 @@ var newPostJobParamsValidations = {
 
     validateDeleteJobParams:(params) =>{
         const schema = Joi.object({
-            postId: Joi.string().required()
+            postID: Joi.string().required()
         })
         return schema.validate(params);
     },
     validateAddToFavouriteJobParams:(params) =>{
         const schema = Joi.object({
-            postId: Joi.string().required(),
+            postID: Joi.string().required(),
             favourite: Joi.boolean().required()
         })
         return schema.validate(params);
     },
-    validateAddCommentsToPostJobsParams:(params) => {
-       
+    validateAddCommentsToPostJobsParams:(params) => {       
         const schema = Joi.object({
-            postId: Joi.string().required(),
-            userId: Joi.string().required(),
+            postID: Joi.string().required(),          
             author: Joi.string().required(),
             author_comment: Joi.string().required(),
             author_email: Joi.string().required(),
@@ -94,10 +109,21 @@ var newPostJobParamsValidations = {
     },
     validateUpdateJobAsFilledParams:(params) =>{
         const schema = Joi.object({
-            postId: Joi.string().required(),
+            postID: Joi.string().required(),
             filled: Joi.boolean().required()
         })
         return schema.validate(params);
+    },
+    validateAddOffersToPostJobsParams:(params) =>{
+        const offersSchema = Joi.object({
+            postID: Joi.string().required(),
+            offeredUserID: Joi.string().required(),
+            authorProfilePic:Joi.string().optional().allow(''),
+            message: Joi.string().required(),
+            authorName: Joi.string().optional().allow(''),
+            budget: Joi.number().required()
+        })
+        return offersSchema.validate(params);
     }
 }
 

@@ -28,11 +28,10 @@ var PostJobs = {
         });
         req.pipe(busboy);
         function uploadToFolder(images, fields) {
-            let query = dbQueries.getUserQueryFromUserId(fields.userId);
+            let query = dbQueries.getUserQueryFromUserId(fields.userID);
             query.then((user) => {
                 if (user) {
-                    let postId = 'POST' + GenerateID.makeId();
-                    console.log('generated id...', postId);
+                    let postID = 'POST' + GenerateID.makeId();                   
                     var imagesPath = [];
                     console.log(images);
                     if (images !== null) {
@@ -42,7 +41,7 @@ var PostJobs = {
                                 var image = images[key];
                                 console.log(image);
                                 let imageName = randomFileName.getFileName(image.name);
-                                let imagepath = "./public/images/Customers/" + imageName;
+                                let imagepath = "./public/images/PostImages/" + imageName;
                                 image.mv(imagepath, (fileErr) => {
                                     if (fileErr) {
                                         return callback({
@@ -53,7 +52,7 @@ var PostJobs = {
                                         imagesPath.push(imageName);
                                         imageCount +=1;
                                         if(imageCount == countObjectKeys(images)){
-                                            return insertPostJobData(callback, fields, postId, imagesPath);
+                                            return insertPostJobData(callback, fields, postID, imagesPath);
                                         }
                                     }
                                 });
@@ -61,7 +60,7 @@ var PostJobs = {
                             }
                         }
                     }else{
-                    return insertPostJobData(callback, fields, postId, imagesPath);
+                    return insertPostJobData(callback, fields, postID, imagesPath);
                     }
                 }
                 else {
@@ -79,16 +78,15 @@ var PostJobs = {
 function countObjectKeys(obj) { 
     return Object.keys(obj).length; 
 }
-function insertPostJobData(callback, params, postId, imagesPaths) {
+function insertPostJobData(callback, params, postID, imagesPaths) {
     console.log('imagespaths..',imagesPaths);
     for (var i = 0; i < imagesPaths.length; i++) {
         var imagePath = imagesPaths[i];
-        imagePath = "/images/Customers/" + imagePath
-
+        imagePath = "/images/PostImages/" + imagePath
         imagesPaths[i] = imagePath;
     }
 
-    let insertJobQuery = dbQueries.newPostJobsInserQuery(params, postId, imagesPaths);
+    let insertJobQuery = dbQueries.newPostJobsInserQuery(params, postID, imagesPaths);
     insertJobQuery.save((err) => {
         if (err) {
            // console.log(err);
@@ -106,7 +104,7 @@ function insertPostJobData(callback, params, postId, imagesPaths) {
                 data: {
                     response: statusCodes.success,
                     message: "Job posted successfully",
-                    postId: postId
+                    postID: postID
                 }
             });
             return;

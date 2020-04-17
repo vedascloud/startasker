@@ -23,7 +23,7 @@ var socialMediaLogin = {
             if (params.userID !== '') {
                 let getUser = dbQueries.getUserQueryFromUserId(params.userID);
                 getUser.then((user_found) => {
-                    if (user_found) {                        
+                    if (user_found) {
                         if (user_found.register_type === params.register_type || user_found.register_type === 'Manual') {
                             if (user_found.Facebook.facebookID === params.ID) {
                                 console.log('fb id matched..');
@@ -41,7 +41,7 @@ var socialMediaLogin = {
                         }
                         let query = dbQueries.getFBCustomerUpdateQuery(params);
                         query.then((update) => {
-                            if(update.ok == 1){
+                            if (update.ok == 1) {
                                 callback({
                                     status: 200,
                                     data: {
@@ -54,7 +54,7 @@ var socialMediaLogin = {
                                 return;
                             }
                         })
-                    } else {                        
+                    } else {
                         let insertFBQuery = dbQueries.getFacebookNewCustomerInsertQuery(params);
                         insertFBQuery.save((err) => {
                             if (err) {
@@ -67,18 +67,30 @@ var socialMediaLogin = {
                                 });
                                 return
                             }
-                            callback({
-                                status: 200,
-                                data: {
-                                    response: statusCodes.success,
-                                    message: "Customer login successfully",
-                                    tokenID: token
+                            let insertQuery = dbQueries.insertCustomerQuery(params);
+                            insertQuery.save((err) => {
+                                if (!err) {
+                                    callback({
+                                        status: 200,
+                                        data: {
+                                            response: statusCodes.success,
+                                            message: "Customer login successfully",
+                                            tokenID: token
+                                        }
+                                    });
+                                    return;
                                 }
-                            });
-                            return;
+                                callback({
+                                    status: 200,
+                                    data: {
+                                        response: statusCodes.success,
+                                        message: "Customer login successfully",
+                                        tokenID: token
+                                    }
+                                });
+                                return;
+                            })
                         })
-
-
                     }
                 })
             } else {
@@ -113,16 +125,29 @@ var socialMediaLogin = {
                                 });
                                 return
                             }
-                            callback({
-                                status: 200,
-                                data: {
-                                    response: statusCodes.success,
-                                    message: "Customer login successfully",
-                                    tokenID: token,
-                                    customerInfo: found
+                            let insertQuery = dbQueries.insertCustomerQuery(params);
+                            insertQuery.save((err) => {
+                                if (!err) {
+                                    callback({
+                                        status: 200,
+                                        data: {
+                                            response: statusCodes.success,
+                                            message: "Customer login successfully",
+                                            tokenID: token
+                                        }
+                                    });
+                                    return;
                                 }
-                            });
-                            return;
+                                callback({
+                                    status: 200,
+                                    data: {
+                                        response: statusCodes.success,
+                                        message: "Customer login successfully",
+                                        tokenID: token
+                                    }
+                                });
+                                return;
+                            })
                         })
                     }
                 })
@@ -148,7 +173,7 @@ var socialMediaLogin = {
                     }
                     let query = dbQueries.getGoogleCustomerUpdateQuery(params);
                     query.then((update) => {
-                        if(update.ok == 1){
+                        if (update.ok == 1) {
                             callback({
                                 status: 200,
                                 data: {
@@ -174,15 +199,29 @@ var socialMediaLogin = {
                             });
                             return
                         }
-                        callback({
-                            status: 200,
-                            data: {
-                                response: statusCodes.success,
-                                message: "Customer login successfully",
-                                tokenID: token
+                        let insertQuery = dbQueries.insertCustomerQuery(params);
+                        insertQuery.save((err) => {
+                            if (!err) {
+                                callback({
+                                    status: 200,
+                                    data: {
+                                        response: statusCodes.success,
+                                        message: "Customer login successfully",
+                                        tokenID: token
+                                    }
+                                });
+                                return;
                             }
-                        });
-                        return;
+                            callback({
+                                status: 200,
+                                data: {
+                                    response: statusCodes.success,
+                                    message: "Customer login successfully",
+                                    tokenID: token
+                                }
+                            });
+                            return;
+                        })
                     })
                 }
             })

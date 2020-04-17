@@ -33,16 +33,32 @@ var customerLogin = {
                 } 
                  if (user.verification_status === true) {
                     var token = jwt.sign({ id: user.userID }, config.secretkey);
-                    callback({
-                        status: 200,
-                        data: {
-                            response: statusCodes.success,
-                            message: "Customer user login success",
-                            access_token: token,
-                            customerInfo: user
+                    let insertQuery = dbQueries.insertCustomerQuery(params);
+                    insertQuery.save((err) =>{
+                        if(!err){
+                            callback({
+                                status: 200,
+                                data: {
+                                    response: statusCodes.success,
+                                    message: "Customer user login success",
+                                    access_token: token,
+                                    customerInfo: user
+                                }
+                            });
+                            return;
                         }
-                    });
-                    return;
+                        callback({
+                            status: 200,
+                            data: {
+                                response: statusCodes.success,
+                                message: "Customer user login success",
+                                access_token: token,
+                                customerInfo: user
+                            }
+                        });
+                        return;
+                    })
+                   
                 } else {
                     callback({ status: 200, data: { response: statusCodes.verificationPending, message: "Customer is registered but verification is pending" } });
                     return;

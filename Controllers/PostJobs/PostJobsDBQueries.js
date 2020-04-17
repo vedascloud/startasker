@@ -1,45 +1,46 @@
 const Customers = require('../../app/Models/Customers');
 const PostJob = require('../../app/Models/PostJob');
-const PostJobComments = require('../../app/Models/PostComments');
-
 var postJobsDBQuries = {
-    getUserQueryFromUserId:(userId) => {
-        return Customers.findOne({ userId: new RegExp('^' + userId + '$', "i") }).exec()
+    getUserQueryFromUserId:(userID) => {
+        return Customers.findOne({ userID: new RegExp('^' + userID + '$', "i") }).exec()
     },
-    newPostJobsInserQuery:(params,postId,images) => {
+    newPostJobsInserQuery:(params,postID,images) => {
       
+         let budgetType = {
+             Total: params.budgetType.Total,
+             HourlyRate: params.budgetType.HourlyRate
+         }
+         let budget = {
+             budgetType:budgetType,
+             budget:params.budget,
+             Hours: params.Hours,
+             pricePerHour: params.pricePerHour
+         }
          let category = {
-             categoryId: params.categoryId,
-             categoryName: params.categoryName
-         }
-         let mobile = {
-             countryCode: params.countryCode,
-             phoneNumber: params.phoneNumber
-         }
+            categoryId: params.category.categoryId,
+            categoryName: params.category.categoryName
+        }
         let posttimeStamp = new Date().getTime().toString();
-        console.log('present timestamp..',posttimeStamp);
         let posttimeStamp1 = new Date();
         let postenddate = posttimeStamp1.getTime() + 30 * 86400000;
-        console.log('end timestamp..',postenddate);
         let postjobs = new PostJob({
-            postId: postId,
-            userId: params.userId,
+            postID: postID,
+            userID: params.userID,
             category:category,
+            budget:budget,
             postTitle: params.postTitle,
-            describeTaskInDetails: params.description,
+            describeTaskInDetails: params.describeTaskInDetails,
+            numberOfWorkers: params.numberOfWorkers,
+            canThisTaskRemote: params.canThisTaskRemote,            
             location: params.location,
-            latitude: params.latitude,
-            longitude: params.longitude,
+            loc:[params.latitude,params.longitude],
+            mustHaves: params.mustHaves,
             postedDate: posttimeStamp,
             postendDate: postenddate,
             taskDate: params.taskDate,           
-            estHoursToCompleteJob: params.estHours,
-            startTime: params.startTime,
-            budget: params.budget,
-            mobile:mobile,
+            convenientTimings: params.convenientTimings,                   
             post_Status: params.post_Status,
-            images:images,
-            isTotal: params.isTotal
+            attachments:images
         })
         return postjobs;
     },
@@ -47,33 +48,49 @@ var postJobsDBQuries = {
     getPostJobQueryFromId: (params) => {
         var query = { 
             $or: [{ 
-                userId: { $regex: params.userId, $options: 'i' }}, { 
-                    postId: { $regex: params.userId, $options: 'i' } 
+                userID: { $regex: params.userID, $options: 'i' }}, { 
+                    postID: { $regex: params.userID, $options: 'i' } 
                     }] 
                     }
         return PostJob.find(query, {_id: 0, __v: 0}).exec()
     },
     getPostJobQueryFromPostId: (postId) => {
         
-        return PostJob.findOne({ postId: new RegExp('^' + postId + '$') }, { _id: 0, __v: 0 }).exec()
+        return PostJob.findOne({ postID: new RegExp('^' + postId + '$') }, { _id: 0, __v: 0 }).exec()
     },
     updatePostJobsQueryParams:(params,images) =>{
-        return PostJob.updateOne({ postId: new RegExp('^' + params.postId + '$', 'i') }, {
-                    
-            category:{categoryId:params.categoryId,categoryName:params.categoryName},
+        
+        let budgetType = {
+            Total: params.budgetType.Total,
+            HourlyRate: params.budgetType.HourlyRate
+        }
+        let budget = {
+            budgetType:budgetType,
+            budget:params.budget,
+            Hours: params.Hours,
+            pricePerHour: params.pricePerHour
+        }
+        let category = {
+            categoryId: params.category.categoryId,
+            categoryName: params.category.categoryName
+        }
+        let postModifyTimeStamp = new Date().getTime().toString();
+        return PostJob.updateOne({ postID: new RegExp('^' + params.postID + '$', 'i') }, {
+           
+            budget:budget,
+            category:category,
             postTitle: params.postTitle,
-            describeTaskInDetails: params.description,
+            describeTaskInDetails: params.describeTaskInDetails,
+            numberOfWorkers: params.numberOfWorkers,
+            canThisTaskRemote: params.canThisTaskRemote,            
             location: params.location,
-            latitude: params.latitude,
-            longitude: params.longitude,
-            taskDate: params.taskDate,
-            estHoursToCompleteJob: params.estHours,
-            startTime: params.startTime,
-            budget: params.budget,
-            mobile:{countryCode:params.countryCode,phoneNumber:params.phoneNumber},
-            images:images,
+            loc:[params.latitude,params.longitude],
+            mustHaves: params.mustHaves,           
+            taskDate: params.taskDate,           
+            convenientTimings: params.convenientTimings,                     
             post_Status: params.post_Status,
-            isTotal: params.isTotal
+            attachments:images,
+            postModifyDate:postModifyTimeStamp
         })       
 
     },
@@ -110,63 +127,74 @@ var postJobsDBQuries = {
         return PostJob.find(query, {_id: 0, __v: 0}).exec()
     },
    //ends here
-    getDeletePostJobQuery: (postId) => {
-        return PostJob.deleteOne({ postId: new RegExp('^' + postId + '$') }).exec()
+    getDeletePostJobQuery: (postID) => {
+        return PostJob.updateOne({ postID: new RegExp(postID, 'i') }, {
+            $set: {
+                post_Status: 'cancel',
+            }
+        }).exec()
     },
 
-    getAddPostToFavouriteQuery: (postId,favourite) => {
-        return PostJob.updateOne({ postId: new RegExp(postId, 'i') }, {
+    getAddPostToFavouriteQuery: (postID,favourite) => {
+        return PostJob.updateOne({ postID: new RegExp(postID, 'i') }, {
             $set: {
                 favourite: favourite,
             }
         }).exec()
     },
-    getAddCommentToPostJobQuery: (params) => {
-
-        let postcomments = new PostJobComments({
-            postId: params.postId,
-            comments:[{
-                userId: params.userId,
-                author: params.author,
-                author_email: params.author_email,
-                author_comment: params.author_comment,
-                comment_date: params.timeStamp,
-                comment_date_gmt: params.gmt_timeStamp
-            }]
-        })
-        return postcomments;
-    },
-    getPostCommentsFromPostId: (postId) => {        
-        return PostJobComments.findOne({ postId: new RegExp('^' + postId + '$') }, { _id: 0, __v: 0 }).exec()
-    },
-    
     getPushCommentsToPostJobQuery: (params) => {
         let comments = {
-            userId: params.userId,
             author: params.author,
             author_email: params.author_email,
             author_comment: params.author_comment,
             comment_date: params.timeStamp,
             comment_date_gmt: params.gmt_timeStamp
         }
-        return PostJobComments.updateOne(
-            { postId: params.postId }, 
+        return PostJob.updateOne(
+            { postID: params.postID }, 
             { $push: { comments: comments } }
         );
       
+    },
+
+    getOfferQuery:(params,ratings) => {
+        let TimeStamp = new Date().getTime().toString();
+        let authorMessages =[{
+            userID :params.offeredUserID,
+            timestamp:TimeStamp,
+            message: params.message
+        }]
+        let offers = {
+            authorRatings:ratings,
+            offeredUserID:params.offeredUserID,
+            authorProfilePic:params.authorProfilePic,
+            authorMessages:authorMessages,
+            authorName:params.authorName,
+            budget:params.budget
+        }
+        return PostJob.updateOne(
+            { postID: params.postID },
+            { $push: { offers: offers } }
+        );
+    },
+    getUpdateJobAppliedCount: (params,count) => {
+        return PostJob.updateOne({ postID: new RegExp(params.postID, 'i') }, {
+            $set: {
+                jobAppliedCount: count
+            }
+        }).exec()
     },
     getAllPostJobsQuery: () => {
         return PostJob.find({}, {_id: 0, __v: 0}).exec()
     },
 
     getUpdatePostJobAsFilledQuery: (params) => {
-        return PostJob.updateOne({ postId: new RegExp(params.postId, 'i') }, {
+        return PostJob.updateOne({ postID: new RegExp(params.postID, 'i') }, {
             $set: {
-                filled: params.filled,
+                filled: params.filled
             }
         }).exec()
     }
-    
     
 }
 

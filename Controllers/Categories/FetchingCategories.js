@@ -17,4 +17,4 @@ var FetchCategories = {
 
 }
 
-module.exports = FetchCategories
+module.exports = FetchCategories;
